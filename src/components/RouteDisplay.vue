@@ -16,8 +16,8 @@ import "leaflet/dist/leaflet.css";
 import { onMounted, onUnmounted, ref, watch, type Ref } from "vue";
 const routeMapContainer: Ref<undefined | HTMLDivElement> = ref(undefined);
 const routeMap: Ref<undefined | Map> = ref(undefined);
-let routeLine = undefined as undefined | Polyline;
-const props = defineProps<{ route: LocationInfo[] }>();
+let routeLines: Polyline[] = [];
+const props = defineProps<{ routes: LocationInfo[][] }>();
 onMounted(() => {
   if (routeMapContainer.value === undefined) return;
   routeMap.value = map(routeMapContainer.value, {
@@ -31,20 +31,29 @@ onMounted(() => {
   }).addTo(routeMap.value);
 });
 
-watch(
-  () => [props.route, routeMap.value] as const,
-  ([r, rm]) => {
-    if (rm === undefined) return;
-    if (routeLine !== undefined) routeLine.remove();
+function redrawRoutes() {
+  const rm = routeMap.value;
+  if (rm === undefined) return;
 
-    if (props.route.length === 1) {
-      rm.setView(props.route[0].location);
-    } else if (props.route.length > 1) {
-      routeLine = polyline(r.map((v) => v.location)).addTo(rm);
-      rm.fitBounds(latLngBounds(r.map((v) => v.location)));
-    }
-  },
-  { immediate: true }
+  routeLines.forEach((v) => v.remove());
+  const newLines = props.routes
+    .filter((v) => v.length > 1)
+    .map((v) => polyline(v.map((q) => q.location)).addTo(rm));
+  routeLines = newLines;
+
+  const routePoints = props.routes.flatMap((v) => v.flatMap((q) => q.location));
+  if (routePoints.length === 1) {
+    rm.setView(routePoints[0]);
+  } else if (routePoints.length > 1) {
+    rm.fitBounds(latLngBounds(routePoints));
+  }
+}
+
+watch(routeMap, () => redrawRoutes(), { immediate: true });
+watch(
+  () => props.routes,
+  () => redrawRoutes(),
+  { deep: true }
 );
 </script>
 <style scoped>

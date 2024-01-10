@@ -1,0 +1,74 @@
+[
+  [
+    {
+      "displayName": "Gerokstraße, Diemershalde, Stuttgart-Mitte, Stuttgart, Baden-Württemberg, 70184, Germany",
+      "location": { "lat": 48.7768331, "lng": 9.191664 },
+      "streetname": "Gerokstraße"
+    },
+    {
+      "displayName": "Geschwister-Scholl-Straße, Hauptbahnhof, Stuttgart-Mitte, Stuttgart, Baden-Württemberg, 70174, Germany",
+      "location": { "lat": 48.7825872, "lng": 9.1771036 },
+      "streetname": "Geschwister-Scholl-Straße"
+    },
+    {
+      "displayName": "Marktstraße, Rathaus, Stuttgart-Mitte, Stuttgart, Baden-Württemberg, 70173, Germany",
+      "location": { "lat": 48.774215, "lng": 9.1805289 },
+      "streetname": "Marktstraße"
+    },
+    {
+      "displayName": "Leuschnerstraße, Neue Vorstadt, Stuttgart-Mitte, Stuttgart-West, Stuttgart, Baden-Württemberg, 70174, Germany",
+      "location": { "lat": 48.7776185, "lng": 9.1687552 },
+      "streetname": "Leuschnerstraße"
+    },
+    {
+      "displayName": "Max-Kade-Weg, Universität, Stuttgart-Mitte, Stuttgart, Baden-Württemberg, 70174, Germany",
+      "location": { "lat": 48.7816698, "lng": 9.173158480067842 },
+      "streetname": "Max-Kade-Weg"
+    },
+    {
+      "displayName": "Vordernbergstraße, Heilbronner Straße, Stuttgart-Nord, Stuttgart, Baden-Württemberg, 70191, Germany",
+      "location": { "lat": 48.7888808, "lng": 9.1796919 },
+      "streetname": "Vordernbergstraße"
+    },
+    {
+      "displayName": "Schubartstraße, Kernerviertel, Stuttgart-Mitte, Stuttgart, Baden-Württemberg, 70190, Germany",
+      "location": { "lat": 48.786578, "lng": 9.1932711 },
+      "streetname": "Schubartstraße"
+    },
+    {
+      "displayName": "Bronnäcker, Stuttgart-Ost, Ostheim, Stuttgart-Ost, Stuttgart, Baden-Württemberg, 70188, Germany",
+      "location": { "lat": 48.7823107, "lng": 9.203277 },
+      "streetname": "Bronnäcker"
+    },
+    {
+      "displayName": "Nüblingweg, Stuttgart-Ost, Ostheim, Stuttgart-Ost, Stuttgart, Baden-Württemberg, 70190, Germany",
+      "location": { "lat": 48.7883214, "lng": 9.2094874 },
+      "streetname": "Nüblingweg"
+    },
+    {
+      "displayName": "Knollstraße, Eisenbahnerdörfle, Auf der Prag, Stuttgart-Nord, Stuttgart, Baden-Württemberg, 70191, Germany",
+      "location": { "lat": 48.7991243, "lng": 9.1923115 },
+      "streetname": "Knollstraße"
+    },
+    {
+      "displayName": "Lenzhalde, Stuttgart-Nord, Stuttgart, Baden-Württemberg, 70192, Germany",
+      "location": { "lat": 48.7876934, "lng": 9.1511921 },
+      "streetname": "Lenzhalde"
+    },
+    {
+      "displayName": "88, Hasenbergstraße, Rosenberg, Stuttgart-West, Stuttgart, Baden-Württemberg, 70176, Germany",
+      "location": { "lat": 48.7781042, "lng": 9.156449544595883 },
+      "streetname": ""
+    },
+    {
+      "displayName": "Hölderlinstraße, Hölderlinplatz, Stuttgart-West, Stuttgart, Baden-Württemberg, 70193, Germany",
+      "location": { "lat": 48.7833263, "lng": 9.1583069 },
+      "streetname": "Hölderlinstraße"
+    },
+    {
+      "displayName": "Römerstraße, Stuttgart-Süd, Karlshöhe, Stuttgart-Süd, Stuttgart, Baden-Württemberg, 70178, Germany",
+      "location": { "lat": 48.7664004, "lng": 9.1694388 },
+      "streetname": "Römerstraße"
+    }
+  ]
+]
