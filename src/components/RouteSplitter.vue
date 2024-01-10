@@ -10,8 +10,16 @@
         group="addressRouteGrouping"
         class="routeGroupDragging"
       >
-        <template #item="{ element }">
-          <div class="routeElement">{{ element.displayName }}</div>
+        <template #item="{ element, index: elementIndex }">
+          <div class="routeElement">
+            <div
+              @click="deleteElement(index, elementIndex)"
+              class="deleteElementButton"
+            >
+              Delete
+            </div>
+            {{ element.displayName }}
+          </div>
         </template>
       </draggable>
     </div>
@@ -26,6 +34,10 @@ const model = defineModel<any[][]>({ required: true });
 function handleChange(index: number, e: (typeof model.value)[number]) {
   model.value.splice(index, 1, e);
 }
+function deleteElement(index: number, elementindex: number) {
+  model.value[index].splice(elementindex, 1);
+}
+
 function addGroup() {
   model.value.push([]);
 }
@@ -40,6 +52,16 @@ function removeGroup(index: number) {
 }
 </script>
 <style scoped>
+.deleteElementButton {
+  background-color: red;
+  border: 2px solid black;
+  padding: 0.1em 0.5em;
+  display: block;
+  text-align: center;
+}
+.deleteElementButton:hover {
+  border-color: white;
+}
 .addButton {
   background-color: lightgreen;
   border: 2px solid black;
