@@ -43,7 +43,8 @@ function removeGroup(index: number) {
 .addButton {
   background-color: lightgreen;
   border: 2px solid black;
-  padding: 0.1em;
+  padding: 0.1em 0.5em;
+  display: inline-block;
 }
 .routeTable {
   display: grid;
