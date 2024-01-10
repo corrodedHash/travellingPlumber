@@ -33,9 +33,11 @@ const adresses = ref([
 </script>
 
 <template>
+  <div>
   <POIList @new-item="handleNewItem" />
   <RouteDisplay :route="adresses.flatMap((v) => v)" />
   <RouteSplitter v-model="adresses" />
+</div>
 </template>
 
 <style scoped></style>
