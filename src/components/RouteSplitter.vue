@@ -1,5 +1,5 @@
 <template>
-  <div @click="addGroup">Add group</div>
+  <div @click="addGroup" class="addButton">Add group</div>
   <div class="routeTable">
     <div v-for="(o, index) in model" :key="index" class="routeGroup">
       <div @click="removeGroup(index)">Remove</div>
@@ -40,19 +40,24 @@ function removeGroup(index: number) {
 }
 </script>
 <style scoped>
+.addButton {
+  background-color: lightgreen;
+  border: 2px solid black;
+  padding: 0.1em;
+}
 .routeTable {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 0.5em;
 }
-.routeGroupDragging{
-flex-grow: 1;
+.routeGroupDragging {
+  flex-grow: 1;
 }
 .routeGroup {
   border: 2px solid black;
   margin: 0.1em;
   padding: 0.2em;
-  display:flex;
+  display: flex;
   flex-direction: column;
 }
 </style>
