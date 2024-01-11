@@ -39,7 +39,7 @@ async function distribute() {
     .map((v) => `${v.location.lat},${v.location.lng}`)
     .join(";");
   const distanceQuery = await fetch(
-    `http://router.project-osrm.org/table/v1/driving/${encodeURIComponent(
+    `https://router.project-osrm.org/table/v1/driving/${encodeURIComponent(
       locationString
     )}?annotations=duration`
   );
