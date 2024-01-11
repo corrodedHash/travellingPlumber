@@ -1,4 +1,3 @@
-import cluster from "cluster";
 import { Cluster, Clusterer } from "k-medoids";
 export interface TSPResult<T> {
   path: T[];
