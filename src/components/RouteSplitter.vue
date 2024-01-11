@@ -1,6 +1,12 @@
 <template>
   <div @click="addGroup" class="addButton">Add group</div>
-  <div @click="distribute">Distribute</div>
+  <div @click="distribute" v-if="distributing === 'Idle'">Distribute</div>
+  <div @click="distribute" v-else-if="distributing === 'InfoFetching'">
+    Fetching info...
+  </div>
+  <div @click="distribute" v-else-if="distributing === 'Optimizing'">
+    Optimizing...
+  </div>
   <div class="routeTable">
     <div v-for="(o, index) in model" :key="index" class="routeGroup">
       <div @click="removeGroup(index)">Remove</div>
@@ -29,11 +35,17 @@
 <script setup lang="ts">
 import type { LocationInfo } from "@/common";
 import { multiTSP } from "@/multitsp";
+import { ref } from "vue";
 import draggable from "vuedraggable";
 
 const model = defineModel<LocationInfo[][]>({ required: true });
 
+type DistributingState = "Idle" | "InfoFetching" | "Optimizing";
+
+const distributing = ref("Idle" as DistributingState);
+
 async function distribute() {
+  distributing.value = "InfoFetching";
   const locations = model.value.flatMap((v) => v);
   const locationString = locations
     .map((v) => `${v.location.lat},${v.location.lng}`)
@@ -44,6 +56,8 @@ async function distribute() {
     )}?annotations=duration`
   );
   const distances = (await distanceQuery.json())["durations"];
+  distributing.value = "Optimizing";
+
   const result = multiTSP(locations, model.value.length, {
     distanceFunction: (a: LocationInfo, b: LocationInfo) => {
       const locAIndex = locations.findIndex(
@@ -55,6 +69,8 @@ async function distribute() {
       return distances[locAIndex][locBIndex];
     },
   });
+  distributing.value = "Idle";
+
   model.value = result.map((v) => v.path);
 }
 
