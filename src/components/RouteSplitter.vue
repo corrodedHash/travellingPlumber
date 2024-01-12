@@ -128,7 +128,7 @@ async function distribute_tsp() {
 }
 
 async function distribute() {
-  await distribute_tsp();
+  await distribute_clustering();
 }
 
 function handleChange(index: number, e: (typeof model.value)[number]) {
