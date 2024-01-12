@@ -62,3 +62,68 @@ export function multiTSP<T extends {}>(
   const clusteredData = clusterer.getClusteredData();
   return clusteredData.map((v) => greedyTSP(v, options.distanceFunction));
 }
+
+export function fromTSP(
+  distances: number[],
+  weights: number[],
+  segments: number,
+  evaluate: (segments: { distance: number; weight: number }[]) => number
+): { cuts: number[]; segmentWeight: number[]; segmentDistance: number[] } {
+  const cutStack = [...new Array(segments + 1).keys()];
+  const doCuts = (cuts: number[]) => {
+    const getSegment = (segmentID: number) => {
+      console.assert(segmentID < segments);
+      if (segmentID === 0) {
+        const d = [
+          ...distances.slice(cuts[cuts.length - 1] + 1),
+          ...distances.slice(0, cuts[0]),
+        ];
+        const w = [
+          ...weights.slice(cuts[cuts.length - 1] + 1),
+          ...weights.slice(0, cuts[0] + 1),
+        ];
+        return { distance: d, weight: w };
+      } else {
+        const d = distances.slice(cuts[segmentID] + 1, cuts[segmentID + 1]);
+        const w = weights.slice(cuts[segmentID] + 1, cuts[segmentID + 1] + 1);
+
+        return { distance: d, weight: w };
+      }
+    };
+    return [...new Array(segments).keys()].map((v) => {
+      const s = getSegment(v);
+      return {
+        distance: s.distance.reduce((a, b) => a + b, 0),
+        weight: s.weight.reduce((a, b) => a + b, 0),
+      };
+    });
+  };
+  const incrementStack = () => {
+    for (const index of [...cutStack.keys()].reverse()) {
+      cutStack[index] += 1;
+      if (cutStack[index] < distances.length) {
+        [...cutStack.keys()]
+          .slice(index + 1)
+          .forEach((v, i) => (cutStack[v] = cutStack[index] + i));
+        return true;
+      }
+    }
+    return false;
+  };
+  let bestCut = [...cutStack];
+  let bestCutPenalty = undefined;
+  for (;;) {
+    const c = doCuts(cutStack);
+    const penalty = evaluate(c);
+    if (bestCutPenalty === undefined || penalty < bestCutPenalty) {
+      bestCut = [...cutStack];
+      bestCutPenalty = penalty;
+    }
+    if (!incrementStack()) {
+      const res = doCuts(bestCut);
+      const segmentWeight = res.map((v) => v.weight);
+      const segmentDistance = res.map((v) => v.distance);
+      return { cuts: bestCut, segmentWeight, segmentDistance };
+    }
+  }
+}
