@@ -63,50 +63,54 @@ export function multiTSP<T extends {}>(
   return clusteredData.map((v) => greedyTSP(v, options.distanceFunction));
 }
 
+// cuts[x] = 0 means to cut between the first and second element. Cut the first edge so to speak
+export function cutIntoSegments<T>(cuts: number[], stream: T[]): T[][] {
+  const segments = [...new Array(cuts.length - 1).keys()].map(
+    (segmentIndex) => {
+      const a = stream.slice(
+        cuts[segmentIndex] + 1,
+        cuts[segmentIndex + 1] + 1
+      );
+      return a;
+    }
+  );
+  segments.push([
+    ...stream.slice(cuts[cuts.length - 1] + 1),
+    ...stream.slice(0, cuts[0] + 1),
+  ]);
+  return segments;
+}
+
 export function fromTSP(
   distances: number[],
   weights: number[],
   segments: number,
   evaluate: (segments: { distance: number; weight: number }[]) => number
 ): { cuts: number[]; segmentWeight: number[]; segmentDistance: number[] } {
-  const cutStack = [...new Array(segments + 1).keys()];
+  const cutStack = [...new Array(segments).keys()];
   const doCuts = (cuts: number[]) => {
-    const getSegment = (segmentID: number) => {
-      console.assert(segmentID < segments);
-      if (segmentID === 0) {
-        const d = [
-          ...distances.slice(cuts[cuts.length - 1] + 1),
-          ...distances.slice(0, cuts[0]),
-        ];
-        const w = [
-          ...weights.slice(cuts[cuts.length - 1] + 1),
-          ...weights.slice(0, cuts[0] + 1),
-        ];
-        return { distance: d, weight: w };
-      } else {
-        const d = distances.slice(cuts[segmentID] + 1, cuts[segmentID + 1]);
-        const w = weights.slice(cuts[segmentID] + 1, cuts[segmentID + 1] + 1);
-
-        return { distance: d, weight: w };
-      }
-    };
+    const weightSegments = cutIntoSegments(cuts, weights);
+    const distanceSegments = cutIntoSegments(cuts, distances).map((v) =>
+      v.slice(1)
+    );
     return [...new Array(segments).keys()].map((v) => {
-      const s = getSegment(v);
       return {
-        distance: s.distance.reduce((a, b) => a + b, 0),
-        weight: s.weight.reduce((a, b) => a + b, 0),
+        distance: distanceSegments[v].reduce((a, b) => a + b, 0),
+        weight: weightSegments[v].reduce((a, b) => a + b, 0),
       };
     });
   };
-  const incrementStack = () => {
-    for (const index of [...cutStack.keys()].reverse()) {
-      cutStack[index] += 1;
-      if (cutStack[index] < distances.length) {
-        [...cutStack.keys()]
+  const incrementStack = (cuts: number[], maxIndex: number) => {
+    let rightDelta = 0;
+    for (const index of [...cuts.keys()].reverse()) {
+      cuts[index] += 1;
+      if (cuts[index] < maxIndex - rightDelta) {
+        [...cuts.keys()]
           .slice(index + 1)
-          .forEach((v, i) => (cutStack[v] = cutStack[index] + i));
+          .forEach((v, i) => (cuts[v] = cuts[index] + i + 1));
         return true;
       }
+      rightDelta += 1;
     }
     return false;
   };
@@ -119,7 +123,7 @@ export function fromTSP(
       bestCut = [...cutStack];
       bestCutPenalty = penalty;
     }
-    if (!incrementStack()) {
+    if (!incrementStack(cutStack, distances.length - 1)) {
       const res = doCuts(bestCut);
       const segmentWeight = res.map((v) => v.weight);
       const segmentDistance = res.map((v) => v.distance);

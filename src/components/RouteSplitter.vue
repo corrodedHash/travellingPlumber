@@ -34,7 +34,7 @@
 </template>
 <script setup lang="ts">
 import { OSRM_URL, type LocationInfo } from "@/common";
-import { fromTSP, multiTSP } from "@/multitsp";
+import { cutIntoSegments, fromTSP, multiTSP } from "@/multitsp";
 import { ref } from "vue";
 import draggable from "vuedraggable";
 
@@ -98,10 +98,11 @@ async function distribute_tsp() {
     segments: { distance: number; weight: number }[]
   ): number => {
     const weights = segments.map((v) => v.distance + v.weight);
-    const sum = weights.reduce((a, b) => a + b);
-    const mean_squared = (sum * sum) / segments.length;
-    const squared_sum = weights.reduce((a, b) => a * a + b * b);
-    return squared_sum - mean_squared;
+    const sum = weights.reduce((a, b) => a + b, 0);
+    const mean = sum / segments.length;
+    const squared_sum =
+      weights.reduce((a, b) => a + b * b, 0) / segments.length;
+    return squared_sum - mean * mean;
   };
   const result = fromTSP(
     distances,
@@ -109,26 +110,15 @@ async function distribute_tsp() {
     model.value.length,
     sample_variance
   );
-  console.log(result);
-  const segment_indices: number[][] = [
-    ...new Array(model.value.length).keys(),
-  ].map((segmentIndex) =>
-    indices.slice(
-      result.cuts[segmentIndex] + 1,
-      result.cuts[segmentIndex + 1] + 1
-    )
-  );
-  segment_indices[0] = [
-    ...indices.slice(result.cuts[result.cuts.length - 1] + 1),
-    ...segment_indices[0],
-  ];
+  const segment_indices: number[][] = cutIntoSegments(result.cuts, indices);
+
   distributing.value = "Idle";
 
   model.value = segment_indices.map((v) => v.map((q) => locations[q]));
 }
 
 async function distribute() {
-  await distribute_clustering();
+  await distribute_tsp();
 }
 
 function handleChange(index: number, e: (typeof model.value)[number]) {
